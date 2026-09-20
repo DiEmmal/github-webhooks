@@ -3,6 +3,7 @@ import env from 'env-var';
 
 export const ENVS = {
 
-    PORT: env.get('PORT').required().asPortNumber() ?? process.env.PORT,
+    PORT: env.get('PORT').asPortNumber() ?? process.env.PORT,
+    DISCORD_WEBHOOK_URL: env.get('DISCORD_WEBHOOK_URL').required().asString(),
 
 };

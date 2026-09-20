@@ -1,17 +1,34 @@
 import type { Request, Response } from "express";
+import { GithubService } from "../services/github.service.js";
+import { DiscordService } from "../services/discord.service.js";
 
 export class GithubController {
 
-    constructor() { };
+    constructor(
+        private readonly githubService = new GithubService(),
+        private readonly discordService = new DiscordService(),
+    ) { };
 
     webhookHandler = (req: Request, res: Response) => {
         const githubEvent = req.header("x-github-event") ?? "unknown";
-        const signature = req.header("x-hub-signature-256") ?? "unknown";
-        // const payload = req.body;
+        // const signature = req.header("x-hub-signature-256") ?? "unknown";
+        const payload = req.body;
+        let message: string;
 
-        console.log({ githubEvent, signature });
+        switch (githubEvent) {
+            case "star":
+                message = this.githubService.onStarEvent(payload);
+                break;
+            case "watch":
+                message = this.githubService.onWatchEvent(payload);
+                break;
+            default:
+                message = `Unhandled event: ${githubEvent}`;
+        };
 
-        res.status(202).send("Request received!");
+        this.discordService.notify(message)
+        .then(() => res.status(202).send('Request received!'))
+        .catch(() => res.status(500).send('Failed to send notification to Discord.'));
 
     };
 

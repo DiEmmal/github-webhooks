@@ -12,9 +12,8 @@ function main() {
 
     app.use(express.json());
 
-    app.post("/api/github", (req, res) => {
-        githubController.webhookHandler(req, res);
-    });
+    app.get("/api/github", githubController.fetchGithubInfo);
+    app.post("/api/github", githubController.webhookHandler);
 
     app.listen(ENVS.PORT, () => {
         console.log(`Server running on port ${ENVS.PORT}`);

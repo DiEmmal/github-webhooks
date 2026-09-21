@@ -1,6 +1,7 @@
 import express from "express";
 import { ENVS } from "./config/envs.adapter.js";
 import { GithubController } from "./presentation/github/controller.js";
+import { GithubSha256Middleware } from "./presentation/middlewares/github-sha256.middleware.js";
 
 (async () => {
     main();
@@ -11,8 +12,9 @@ function main() {
     const githubController = new GithubController();
 
     app.use(express.json());
+    app.use(GithubSha256Middleware.verifyGithubSignature);
 
-    app.get("/api/github", githubController.fetchGithubInfo);
+    app.get("/", githubController.fetchGithubInfo);
     app.post("/api/github", githubController.webhookHandler);
 
     app.listen(ENVS.PORT, () => {

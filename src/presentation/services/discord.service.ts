@@ -6,12 +6,15 @@ export class DiscordService {
         private readonly webhookUrl = ENVS.DISCORD_WEBHOOK_URL
     ) { };
 
-    async notify(message: string): Promise<boolean> {
+    async notify(message: string, user: string): Promise<boolean> {
 
         const body = {
-            content: message,
+            content: `User ${user} triggered a Github event:`,
             embeds: [
-                { image: { url: "https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExdHBkNjV2Y2JqMzJlbHp0M3J0ZXpqOXc4ZW9xaDVudGoxbjR0aXVzZiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/paoX8smVvbggCXLu80/giphy.gif" } }
+                { 
+                    title: "Github Event",
+                    description: message,
+                }
             ],
         };
 

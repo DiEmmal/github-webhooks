@@ -12,10 +12,9 @@ function main() {
     const githubController = new GithubController();
 
     app.use(express.json());
-    app.use(GithubSha256Middleware.verifyGithubSignature);
 
     app.get("/", githubController.fetchGithubInfo);
-    app.post("/api/github", githubController.webhookHandler);
+    app.post("/api/github", [GithubSha256Middleware.verifyGithubSignature],githubController.webhookHandler);
 
     app.listen(ENVS.PORT, () => {
         console.log(`Server running on port ${ENVS.PORT}`);
